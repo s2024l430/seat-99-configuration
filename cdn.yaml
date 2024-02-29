@@ -1,0 +1,47 @@
+# kind: "CDN"
+# version: "1"
+# metadata:
+#   envTypes: ["dev"]
+# data:
+#   trafficFilters:
+#     rules:
+#       - name: block-xss
+#         when:
+#           reqProperty: tier
+#           equals: "publish"
+#         action:
+#           type: block
+#           wafFlags:
+#             - XSS
+#       - name: "path-rule"
+#         when:
+#           reqProperty: path
+#           equals: /block-me
+#         action:
+#           type: block
+#       - name: "query-param-rule"
+#         when:
+#           queryParam: url-param
+#           exists: true
+#         action:
+#           type: block
+#       - name: "block-chrome"
+#         when:
+#           allOf:
+#             - reqProperty: path
+#               equals: /block-chrome
+#             - reqHeader: user-agent
+#               matches: '.*Chrome.*'
+#         action:
+#           type: block
+#       - name: limit-requests-client-ip
+#         when:
+#           reqProperty: tier
+#           equals: "publish"
+#         rateLimit:
+#           limit: 60
+#           window: 10
+#           penalty: 60
+#           groupBy:
+#             - reqProperty: clientIp
+#         action: block
